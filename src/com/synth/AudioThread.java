@@ -17,6 +17,8 @@ class AudioThread extends  Thread{
     private final int source;
 
     private int bufferIndex;
+    private boolean closed;
+    private boolean running;
 
     AudioThread() {
         alcMakeContextCurrent(context);
@@ -27,8 +29,17 @@ class AudioThread extends  Thread{
         }
 
         alSourcePlay(source);
-        // add catch internal excpetion in the future
+        catchInternalException();
         start();
+    }
+
+    @Override
+    public synchronized void run() {
+        while (!closed) {
+            while (!running) {
+
+            }
+        }
     }
 
     private void bufferSample(short[] samples){
@@ -38,4 +49,10 @@ class AudioThread extends  Thread{
         bufferIndex %= BUFFER_COUNT;
     }
 
+    private void catchInternalException() {
+        int err = alcGetError(device);
+        if (err != ALC_NO_ERROR) {
+            throw new OpenALException(err);
+        }
+    }
 }
