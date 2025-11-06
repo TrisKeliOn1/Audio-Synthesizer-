@@ -23,7 +23,7 @@ class AudioThread extends  Thread{
         AL.createCapabilities(ALC.createCapabilities(device));
         source = alGenSources();
         for (int i = 0; i < BUFFER_COUNT; i++) {
-            // add buffer samples in the future
+            bufferSample(new short[0]);
         }
 
         alSourcePlay(source);
@@ -33,6 +33,9 @@ class AudioThread extends  Thread{
 
     private void bufferSample(short[] samples){
         int buf = buffers[bufferIndex++];
+        alBufferData(buf, AL_FORMAT_MONO16, samples, SynthesizerRemastered.AudioInfo.SAMPLE_RATE);
+        alSourceQueueBuffers(source, buf);
+        bufferIndex %= BUFFER_COUNT;
     }
 
 }
