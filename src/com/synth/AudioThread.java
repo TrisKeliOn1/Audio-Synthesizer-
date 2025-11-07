@@ -1,5 +1,6 @@
 package com.synth;
 
+import com.synth.utils.Utils;
 import org.lwjgl.openal.AL;
 import org.lwjgl.openal.ALC;
 
@@ -37,9 +38,37 @@ class AudioThread extends  Thread{
     public synchronized void run() {
         while (!closed) {
             while (!running) {
-
+                Utils.handleProcedure(this::wait, false);
             }
+            int processedBufs = alGetSourcei(source, AL_BUFFERS_PROCESSED);
+            for (int i = 0; i < processedBufs; i++) {
+                // short[] sample
+                // if (samples == null)
+                // running = false
+                // break
+                alDeleteBuffers(alSourceUnqueueBuffers(source));
+                buffers[bufferIndex] = alGenBuffers();
+                // bufferSamples(samples);
+            }
+            if (alGetSourcei(source, AL_SOURCE_STATE) != AL_PLAYING) {
+                alSourcePlay(source);
+            } catchInternalException();
         }
+        alDeleteSources(source);
+        alDeleteBuffers(buffers);
+        alcDestroyContext(context);
+        alcCloseDevice(device);
+    }
+
+    synchronized void triggerPlayback() {
+        running = true;
+        notify();
+    }
+
+    void closed() {
+        closed = true;
+        // break out of loop
+        triggerPlayback();
     }
 
     private void bufferSample(short[] samples){

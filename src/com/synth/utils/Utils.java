@@ -2,12 +2,14 @@ package com.synth.utils;
 
 public class Utils {
 
-    public static void invokeProcedure(Procedure procedure, boolean printStackTrace) {
+    public static void handleProcedure(Procedure procedure, boolean printStackTrace) {
         try {
             procedure.invoke();
         }
         catch (Exception e) {
-            e.printStackTrace();
+            if (printStackTrace) {
+                e.printStackTrace();
+            }
         }
     }
 }
