@@ -4,14 +4,17 @@ import com.synth.utils.Utils;
 import org.lwjgl.openal.AL;
 import org.lwjgl.openal.ALC;
 
+import java.util.function.Supplier;
+
 import static org.lwjgl.openal.AL10.*;
 import static org.lwjgl.openal.ALC10.*;
 
 class AudioThread extends  Thread{
 
-    private final int BUFFER_SIZE = 512;
-    private final int BUFFER_COUNT = 8;
+    static final int BUFFER_SIZE = 512;
+    static final int BUFFER_COUNT = 8;
 
+    private final Supplier<short[]> bufferSupplier;
     private final int [] buffers = new int[BUFFER_COUNT];
     private final long device = alcOpenDevice(alcGetString(0, ALC_DEVICE_SPECIFIER));
     private final long context = alcCreateContext(device, new int[1]);
@@ -21,7 +24,8 @@ class AudioThread extends  Thread{
     private boolean closed;
     private boolean running;
 
-    AudioThread() {
+    AudioThread(Supplier<short[]> bufferSupplier) {
+        this.bufferSupplier = bufferSupplier;
         alcMakeContextCurrent(context);
         AL.createCapabilities(ALC.createCapabilities(device));
         source = alGenSources();
@@ -42,13 +46,14 @@ class AudioThread extends  Thread{
             }
             int processedBufs = alGetSourcei(source, AL_BUFFERS_PROCESSED);
             for (int i = 0; i < processedBufs; i++) {
-                // short[] sample
-                // if (samples == null)
-                // running = false
-                // break
+                short[] samples = bufferSupplier.get();
+                if (samples == null) {
+                    running = false;
+                    break;
+                }
                 alDeleteBuffers(alSourceUnqueueBuffers(source));
                 buffers[bufferIndex] = alGenBuffers();
-                // bufferSamples(samples);
+                bufferSample(samples);
             }
             if (alGetSourcei(source, AL_SOURCE_STATE) != AL_PLAYING) {
                 alSourcePlay(source);
