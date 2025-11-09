@@ -38,6 +38,10 @@ class AudioThread extends  Thread{
         start();
     }
 
+    boolean isRunning() {
+        return running;
+    }
+
     @Override
     public synchronized void run() {
         while (!closed) {
@@ -70,7 +74,7 @@ class AudioThread extends  Thread{
         notify();
     }
 
-    void closed() {
+    void close() {
         closed = true;
         // break out of loop
         triggerPlayback();
