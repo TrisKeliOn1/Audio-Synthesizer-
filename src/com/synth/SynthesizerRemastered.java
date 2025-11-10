@@ -11,7 +11,7 @@ public class SynthesizerRemastered {
     private boolean shouldGenerate;
 
 
-    private final Oscillator[] oscillators = new Oscillator[1];
+    private final Oscillator[] oscillators = new Oscillator[3];
     private final JFrame frame = new JFrame ("Synthesizer Remastered");
     private final AudioThread audioThread = new AudioThread(() ->{
         if (!shouldGenerate) {
@@ -21,7 +21,7 @@ public class SynthesizerRemastered {
         for (int i = 0; i < AudioThread.BUFFER_SIZE; i++) {
             double d = 0;
             for (Oscillator o : oscillators) {
-                d += o.nextSample();
+                d += o.nextSample() / oscillators.length;
             }
             s[i] = (short) (Short.MAX_VALUE * d);
         }
@@ -41,12 +41,12 @@ public class SynthesizerRemastered {
         public void keyReleased(KeyEvent e) {
             shouldGenerate = false;
         }
-    }
+    };
 
     SynthesizerRemastered() {
         int y = 0;
         for (int i = 0; i < oscillators.length; i++) {
-            oscillators[i] = new Oscillator();
+            oscillators[i] = new Oscillator(this);
             oscillators[i].setLocation(5, y);
             frame.add(oscillators[i]);
             y += 105;
