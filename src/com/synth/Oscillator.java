@@ -6,7 +6,7 @@ import javax.swing.*;
 import java.awt.event.ItemEvent;
 import java.util.Random;
 
-public class Oscillator extends JPanel {
+public class Oscillator extends SynthControlContainer {
 
     private static final double FREQUENCY = 440;
 
@@ -15,7 +15,8 @@ public class Oscillator extends JPanel {
     private WaveForm waveForm = WaveForm.Sine;
     private int wavePos;
 
-    public Oscillator() {
+    public Oscillator(SynthesizerRemastered synth) {
+        super(synth);
         JComboBox<WaveForm> comboBox = new JComboBox<>(new WaveForm[] {WaveForm.Sine, WaveForm.Square, WaveForm.Saw, WaveForm.Triangle, WaveForm.Noise});
         comboBox.setSelectedItem(WaveForm.Sine);
         comboBox.setBounds(10, 10, 75, 25);
