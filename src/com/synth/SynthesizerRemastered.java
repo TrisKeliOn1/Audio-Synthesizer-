@@ -36,6 +36,9 @@ public class SynthesizerRemastered {
         @Override
         public void keyPressed(KeyEvent e) {
             if (!audioThread.isRunning()) {
+                for (Oscillator oscillator : oscillators) {
+                    // set frequency of based in the key event
+                }
                 shouldGenerate = true;
                 audioThread.triggerPlayback();
             }
@@ -51,7 +54,7 @@ public class SynthesizerRemastered {
         final int STARTING_KEY = 16;
         final int KEY_FREQUENCY_INCREMENT = 2;
         final char[] KEYS = "zxcvbnm, ./asdfghjkl; #qwertyuiop[]".toCharArray();
-        for (int i = STARTING_KEY, key = 0; i < KEYS.length * KEY_FREQUENCY_INCREMENT + STARTING_KEY; i += KEY_FREQUENCY_INCREMENT, key++) {
+        for (int i = STARTING_KEY, key = 0; i < KEYS.length * KEY_FREQUENCY_INCREMENT + STARTING_KEY; i += KEY_FREQUENCY_INCREMENT, ++key) {
             KEY_FREQUENCIES.put(KEYS[key], Utils.Math.getKeyFrequency(i));
         }
     }
