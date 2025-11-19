@@ -19,7 +19,7 @@ public class Oscillator extends SynthControlContainer {
     private WaveForm waveForm = WaveForm.Sine;
     private double keyFrequency;
     private double frequency;
-    private int toneOffset
+    private int toneOffset;
     private int wavePos;
 
     public Oscillator(SynthesizerRemastered synth) {
@@ -60,8 +60,10 @@ public class Oscillator extends SynthControlContainer {
                     } else if (!mouseMovingUp && toneOffset > -TONE_OFFSET_LIMIT) {
                         --toneOffset;
                     }
-                    toneParameter.setText("x" + );
+                    applyToneOffset();
+                    toneParameter.setText("x" + String.format("%.3f", getToneOffset()));
                 }
+                Utils.ParameterHandling.PARAMETER_ROBOT.mouseMove(mouseClickLocation.x, mouseClickLocation.y);
             }
         });
         add(toneParameter);
@@ -81,9 +83,13 @@ public class Oscillator extends SynthControlContainer {
         return frequency;
     }
 
-    public void setFrequency(double frequency) {
+    public void setKeyFrequency(double frequency) {
         keyFrequency = this.frequency = frequency;
-        // apply to
+        applyToneOffset();
+    }
+
+    private double getToneOffset() {
+        return toneOffset / 1000d;
     }
 
     public double nextSample() {
@@ -102,5 +108,10 @@ public class Oscillator extends SynthControlContainer {
             default:
                 throw new RuntimeException("Oscillator set to unknow waveform");
         }
+    }
+
+    private void applyToneOffset() {
+        frequency = keyFrequency * Math.pow(2, getToneOffset());
+        System.out.println(frequency);
     }
 }

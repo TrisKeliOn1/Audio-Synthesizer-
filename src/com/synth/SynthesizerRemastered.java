@@ -37,7 +37,7 @@ public class SynthesizerRemastered {
         public void keyPressed(KeyEvent e) {
             if (!audioThread.isRunning()) {
                 for (Oscillator oscillator : oscillators) {
-                    // set frequency of based in the key event
+                    oscillator.setKeyFrequency(KEY_FREQUENCIES.get(e.getKeyChar()));
                 }
                 shouldGenerate = true;
                 audioThread.triggerPlayback();
