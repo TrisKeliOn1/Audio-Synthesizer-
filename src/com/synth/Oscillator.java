@@ -8,28 +8,23 @@ import java.awt.event.ItemEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
-import java.util.Random;
 
 public class Oscillator extends SynthControlContainer {
 
     private static final int TONE_OFFSET_LIMIT = 2000;
 
-    private final Random random = new Random();
-
-    private WaveForm waveForm = WaveForm.Sine;
+    private Wavetable wavetable = Wavetable.Sine;
     private double keyFrequency;
-    private double frequency;
     private int toneOffset;
-    private int wavePos;
 
     public Oscillator(SynthesizerRemastered synth) {
         super(synth);
-        JComboBox<WaveForm> comboBox = new JComboBox<>(new WaveForm[] {WaveForm.Sine, WaveForm.Square, WaveForm.Saw, WaveForm.Triangle, WaveForm.Noise});
-        comboBox.setSelectedItem(WaveForm.Sine);
+        JComboBox<Wavetable> comboBox = new JComboBox<>(Wavetable.values());
+        comboBox.setSelectedItem(Wavetable.Sine);
         comboBox.setBounds(10, 10, 75, 25);
         comboBox.addItemListener(l -> {
             if (l.getStateChange() == ItemEvent.SELECTED) {
-                waveForm = (WaveForm)l.getItem();
+                wavetable = (Wavetable)l.getItem();
             }
         });
         add(comboBox);
@@ -75,16 +70,10 @@ public class Oscillator extends SynthControlContainer {
         setLayout(null);
     }
 
-    private enum WaveForm {
-        Sine, Square, Saw, Triangle, Noise
-    }
 
-    public double getKeyFrequency() {
-        return frequency;
-    }
 
     public void setKeyFrequency(double frequency) {
-        keyFrequency = this.frequency = frequency;
+        keyFrequency = frequency;
         applyToneOffset();
     }
 
