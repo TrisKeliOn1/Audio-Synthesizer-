@@ -15,6 +15,8 @@ public class Oscillator extends SynthControlContainer {
 
     private Wavetable wavetable = Wavetable.Sine;
     private double keyFrequency;
+    private int wavetableStepSize;
+    private int wavatableIndex;
     private int toneOffset;
 
     public Oscillator(SynthesizerRemastered synth) {
@@ -81,26 +83,13 @@ public class Oscillator extends SynthControlContainer {
         return toneOffset / 1000d;
     }
 
-    public double nextSample() {
-        double tDivP = (wavePos++ / (double)SynthesizerRemastered.AudioInfo.SAMPLE_RATE) / ( 1d / frequency);
-        switch (waveForm) {
-            case Sine:
-                return Math.sin(Utils.Math.frequencyToAngualrFrequency(frequency) * (wavePos - 1) / SynthesizerRemastered.AudioInfo.SAMPLE_RATE);
-            case Square:
-                return Math.signum(Math.sin(Utils.Math.frequencyToAngualrFrequency(frequency) * (wavePos - 1) / SynthesizerRemastered.AudioInfo.SAMPLE_RATE));
-            case Saw:
-                return 2d * (tDivP - Math.floor(0.5 + tDivP));
-            case Triangle:
-                return 2d * Math.abs(2d * (tDivP - Math.floor(0.5 + tDivP))) - 1;
-            case Noise:
-                return random.nextDouble();
-            default:
-                throw new RuntimeException("Oscillator set to unknow waveform");
-        }
+    public double getNextSample() {
+        double sample = wavetable.getSamples() [wavatableIndex];
+        wavatableIndex = (wavatableIndex + wavetableStepSize) % Wavetable.SIZE;
+        return sample;
     }
 
     private void applyToneOffset() {
-        frequency = keyFrequency * Math.pow(2, getToneOffset());
-        System.out.println(frequency);
+        wavetableStepSize = (int)(Wavetable.SIZE*(keyFrequency*Math.pow(2,getToneOffset()))/SynthesizerRemastered.AudioInfo.SAMPLE_RATE);
     }
 }

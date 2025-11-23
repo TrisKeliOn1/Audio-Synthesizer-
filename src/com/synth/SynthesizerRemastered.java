@@ -25,7 +25,7 @@ public class SynthesizerRemastered {
         for (int i = 0; i < AudioThread.BUFFER_SIZE; i++) {
             double d = 0;
             for (Oscillator o : oscillators) {
-                d += o.nextSample() / oscillators.length;
+                d += o.getNextSample() / oscillators.length;
             }
             s[i] = (short) (Short.MAX_VALUE * d);
         }

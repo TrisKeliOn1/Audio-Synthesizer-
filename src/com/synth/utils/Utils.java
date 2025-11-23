@@ -37,7 +37,7 @@ public class Utils {
     }
 
     public static class Math {
-        public static double frequencyToAngualrFrequency(double freq) {
+        public static double frequencyToAngularFrequency(double freq) {
             return 2 * PI * freq;
         }
 
