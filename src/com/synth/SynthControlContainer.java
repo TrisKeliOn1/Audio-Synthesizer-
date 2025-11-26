@@ -10,16 +10,16 @@ public class SynthControlContainer extends JPanel {
     private SynthesizerRemastered synth;
     private Point mouseClickLocation;
 
-    public SynthControlContainer(SynthesizerRemastered synth) {
-        this.synth = synth;
-    }
-
-    public Point getMouseClickLocation(Point mouseClickLocation) {
+    public Point getMouseClickLocation() {
         return mouseClickLocation;
     }
 
     public void setMouseClickLocation(Point mouseClickLocation) {
         this.mouseClickLocation = mouseClickLocation;
+    }
+
+    public SynthControlContainer(SynthesizerRemastered synth) {
+        this.synth=synth;
     }
 
     public boolean isOn() {
@@ -47,16 +47,15 @@ public class SynthControlContainer extends JPanel {
         component.addKeyListener(synth.getKeyAdapter());
         return super.add(name, component);
     }
-
     @Override
     public void add(Component component, Object constraints) {
         component.addKeyListener(synth.getKeyAdapter());
         super.add(component, constraints);
     }
-
     @Override
     public void add(Component component, Object constraints, int index) {
         component.addKeyListener(synth.getKeyAdapter());
         super.add(component, constraints, index);
     }
+
 }
