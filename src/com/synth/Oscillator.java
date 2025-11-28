@@ -15,7 +15,7 @@ public class Oscillator extends SynthControlContainer {
     private RefWrapper<Integer> toneOffset = new RefWrapper<>(0);
     private RefWrapper<Integer> volume = new RefWrapper<>(100);
     private int wavetableStepSize;
-    private int wavatableIndex;
+    private int wavetableIndex;
 
     public Oscillator(SynthesizerRemastered synth) {
         super(synth);
@@ -58,8 +58,8 @@ public class Oscillator extends SynthControlContainer {
     }
 
     public double getNextSample() {
-        double sample = wavetable.getSamples() [wavatableIndex] * getVolumeMultiplier();
-        wavatableIndex = (wavatableIndex + wavetableStepSize) % Wavetable.SIZE;
+        double sample = wavetable.getSamples() [wavetableIndex] * getVolumeMultiplier();
+        wavetableIndex = (wavetableIndex + wavetableStepSize) % Wavetable.SIZE;
         return sample;
     }
 
@@ -70,7 +70,7 @@ public class Oscillator extends SynthControlContainer {
 
     public double[] getSampleWaveForm(int numSamples) {
         double[] samples = new double[numSamples];
-        double frequency = 1.0 / (numSamples / (double)SynthesizerRemastered.AudioInfo.SAMPLE_RATE) * 3.0;
+        double keyFrequency = 1.0 / (numSamples / (double)SynthesizerRemastered.AudioInfo.SAMPLE_RATE) * 3.0;
         int index = 0;
         int stepSize = (int)(Wavetable.SIZE * Utils.Math.offsetTone(keyFrequency, getToneOffset()) / SynthesizerRemastered.AudioInfo.SAMPLE_RATE);
         for (int i = 0; i < numSamples; i++) {
