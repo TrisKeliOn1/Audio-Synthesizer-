@@ -82,6 +82,10 @@ public class Utils {
             return 2 * PI * freq;
         }
 
+        public static double offsetTone(double baseFrequency, double frequencyMultiplier) {
+            return baseFrequency * pow(2.0, frequencyMultiplier);
+        }
+
         public static double getKeyFrequency(int keyNum) {
             return pow(root(2, 12), keyNum - 49) * 440;
         }

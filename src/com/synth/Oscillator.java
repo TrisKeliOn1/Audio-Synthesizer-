@@ -26,6 +26,7 @@ public class Oscillator extends SynthControlContainer {
             if (l.getStateChange() == ItemEvent.SELECTED) {
                 wavetable = (Wavetable)l.getItem();
             }
+            synth.updateWaveviewer();
         });
         add(comboBox);
         JLabel toneParameter = new JLabel("x0.00");
@@ -34,6 +35,7 @@ public class Oscillator extends SynthControlContainer {
         Utils.ParameterHandling.addParameterMouseListeners(toneParameter, this, -TONE_OFFSET_LIMIT, TONE_OFFSET_LIMIT, 1, toneOffset, () -> {
             applyToneOffset();
             toneParameter.setText("x" + String.format("%.3f", getToneOffset()));
+            synth.updateWaveviewer();
         });
         add(toneParameter);
         JLabel toneText = new JLabel("Tone");
@@ -44,6 +46,7 @@ public class Oscillator extends SynthControlContainer {
         volumeParameter.setBorder(Utils.WindowDesign.LINE_BORDER);
         Utils.ParameterHandling.addParameterMouseListeners(volumeParameter, this, 0, 100, 1, volume, () -> {
             volumeParameter.setText(" " + volume.val + "%");
+            synth.updateWaveviewer();
         });
         add(volumeParameter);
         JLabel volumeText = new JLabel("Volume");
@@ -54,11 +57,27 @@ public class Oscillator extends SynthControlContainer {
         setLayout(null);
     }
 
-
+    public double getNextSample() {
+        double sample = wavetable.getSamples() [wavatableIndex] * getVolumeMultiplier();
+        wavatableIndex = (wavatableIndex + wavetableStepSize) % Wavetable.SIZE;
+        return sample;
+    }
 
     public void setKeyFrequency(double frequency) {
         keyFrequency = frequency;
         applyToneOffset();
+    }
+
+    public double[] getSampleWaveForm(int numSamples) {
+        double[] samples = new double[numSamples];
+        double frequency = 1.0 / (numSamples / (double)SynthesizerRemastered.AudioInfo.SAMPLE_RATE) * 3.0;
+        int index = 0;
+        int stepSize = (int)(Wavetable.SIZE * Utils.Math.offsetTone(keyFrequency, getToneOffset()) / SynthesizerRemastered.AudioInfo.SAMPLE_RATE);
+        for (int i = 0; i < numSamples; i++) {
+            samples[i] = wavetable.getSamples()[index] * getVolumeMultiplier();
+            index = (index + stepSize) % Wavetable.SIZE;
+        }
+        return samples;
     }
 
     private double getToneOffset() {
@@ -69,13 +88,9 @@ public class Oscillator extends SynthControlContainer {
         return volume.val / 100.0;
     }
 
-    public double getNextSample() {
-        double sample = wavetable.getSamples() [wavatableIndex] * getVolumeMultiplier();
-        wavatableIndex = (wavatableIndex + wavetableStepSize) % Wavetable.SIZE;
-        return sample;
-    }
+
 
     private void applyToneOffset() {
-        wavetableStepSize = (int)(Wavetable.SIZE*(keyFrequency*Math.pow(2,getToneOffset()))/SynthesizerRemastered.AudioInfo.SAMPLE_RATE);
+        wavetableStepSize = (int)(Wavetable.SIZE * Utils.Math.offsetTone(keyFrequency, getToneOffset())/SynthesizerRemastered.AudioInfo.SAMPLE_RATE);
     }
 }
