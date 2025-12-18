@@ -39,13 +39,15 @@ public class SynthesizerRemastered {
             if (!KEY_FREQUENCIES.containsKey(e.getKeyChar())) {
                 return;
             }
+            for (Oscillator oscillator : oscillators) {
+                oscillator.setKeyFrequency(KEY_FREQUENCIES.get(e.getKeyChar()));
+            }
+
             if (!audioThread.isRunning()) {
-                for (Oscillator oscillator : oscillators) {
-                    oscillator.setKeyFrequency(KEY_FREQUENCIES.get(e.getKeyChar()));
-                }
                 shouldGenerate = true;
                 audioThread.triggerPlayback();
             }
+
         }
 
         @Override
