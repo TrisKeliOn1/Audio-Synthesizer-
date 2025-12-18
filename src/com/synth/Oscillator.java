@@ -70,15 +70,18 @@ public class Oscillator extends SynthControlContainer {
 
     public double[] getSampleWaveForm(int numSamples) {
         double[] samples = new double[numSamples];
-        double keyFrequency = 1.0 / (numSamples / (double)SynthesizerRemastered.AudioInfo.SAMPLE_RATE) * 3.0;
-        int index = 0;
-        int stepSize = (int)(Wavetable.SIZE * Utils.Math.offsetTone(keyFrequency, getToneOffset()) / SynthesizerRemastered.AudioInfo.SAMPLE_RATE);
+
+        int index = wavetableIndex;
+        int step = wavetableStepSize;
+
         for (int i = 0; i < numSamples; i++) {
             samples[i] = wavetable.getSamples()[index] * getVolumeMultiplier();
-            index = (index + stepSize) % Wavetable.SIZE;
+            index = (index + step) % Wavetable.SIZE;
         }
+
         return samples;
     }
+
 
     private double getToneOffset() {
         return toneOffset.val / 1000d;
