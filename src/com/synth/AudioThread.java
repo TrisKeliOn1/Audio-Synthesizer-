@@ -21,8 +21,8 @@ class AudioThread extends  Thread{
     private final int source;
 
     private int bufferIndex;
-    private boolean closed;
-    private boolean running;
+    private volatile boolean closed;
+    private volatile boolean running;
 
     AudioThread(Supplier<short[]> bufferSupplier) {
         this.bufferSupplier = bufferSupplier;
@@ -71,8 +71,9 @@ class AudioThread extends  Thread{
 
     synchronized void triggerPlayback() {
         running = true;
-        notify();
+        notifyAll();
     }
+
 
     void close() {
         closed = true;

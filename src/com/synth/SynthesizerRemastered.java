@@ -13,7 +13,7 @@ public class SynthesizerRemastered {
 
     private static final HashMap<Character, Double> KEY_FREQUENCIES = new HashMap<>();
 
-    private boolean shouldGenerate;
+    private volatile boolean shouldGenerate;
 
     private final Oscillator[] oscillators = new Oscillator[3];
     private final WaveViewer waveViewer = new WaveViewer(oscillators);
